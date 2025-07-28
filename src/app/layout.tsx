@@ -1,3 +1,4 @@
+import { Footer } from '@/components/footer'
 import { Navbar } from '@/components/navbar'
 import { QueryClientContext } from '@/providers/queryclient'
 import type { Metadata } from 'next'
@@ -33,7 +34,7 @@ export default function RootLayout({
           <div className="flex min-h-dvh flex-col gap-6">
             <Navbar />
             <main className="flex-1">{children}</main>
-            <footer className="">Footer</footer>
+            <Footer />
           </div>
         </QueryClientContext>
       </body>
