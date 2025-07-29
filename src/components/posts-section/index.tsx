@@ -1,6 +1,7 @@
 'use client'
 
-import { PostsData } from '@/types/post'
+import api from '@/lib/axios'
+import { Posts } from '@/types/post'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { ArrowBigLeft, ArrowBigRight } from 'lucide-react'
 import { useEffect, useState } from 'react'
@@ -21,18 +22,15 @@ export function PostsSection({ url, page }: PostsSectionProps) {
     queryClient.invalidateQueries({ queryKey: ['get-posts', npage, url] })
   }, [queryClient, npage, url])
 
-  const { data, isLoading, error } = useQuery<PostsData['data']>({
+  const getPosts = async () => {
+    return await api
+      .get<Posts>(`${url}${npage}`)
+      .then((response) => response.data)
+  }
+
+  const { data, isLoading, error } = useQuery({
     queryKey: ['get-posts', npage, url],
-    queryFn: async (): Promise<PostsData['data']> => {
-      const response = await fetch(`${url}${npage}`)
-      const json = await response.json()
-
-      if (!response.ok) {
-        throw new Error('Erro ao buscar posts')
-      }
-
-      return json.data
-    },
+    queryFn: getPosts,
     refetchInterval: 60000, // refetch a cada 60 segundos
   })
 
@@ -64,10 +62,10 @@ export function PostsSection({ url, page }: PostsSectionProps) {
 
   return (
     <>
-      <div className="mx-auto grid w-fit gap-12 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
+      <div className="grid w-fit gap-12 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
         {data && data.posts.map((post) => <Post key={post.id} {...post} />)}
       </div>
-      <div className="mt-6 flex justify-end gap-1">
+      <div className="mt-6 flex gap-1 place-self-end">
         {npage > 1 && (
           <Button
             className="w-fit cursor-pointer rounded-sm bg-gray-800 px-2 py-1 text-sm duration-300 hover:bg-gray-950"

@@ -12,7 +12,3 @@ export interface Posts {
   posts: Post[]
   page: number
 }
-
-export interface PostsData {
-  data: Posts
-}
