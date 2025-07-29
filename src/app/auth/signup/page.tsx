@@ -6,11 +6,11 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { Metadata } from 'next'
-import { SignInForm } from '../_components/signin-form'
+import { SignUpForm } from '../_components/signup-form'
 
 export const metadata: Metadata = {
-  title: 'Login',
-  description: 'Página de login no blog.',
+  title: 'Cadastro',
+  description: 'Página de cadastro no blog.',
 }
 
 export default function SignInPage() {
@@ -19,14 +19,14 @@ export default function SignInPage() {
       <Card className="h-fit w-64 border-0 bg-gray-800 md:w-96">
         <CardHeader className="flex flex-col items-center">
           <CardTitle className="text-xl font-bold text-zinc-200 sm:text-2xl">
-            Entrar
+            Cadastro
           </CardTitle>
           <CardDescription className="text-zinc-200">
             Informe suas credenciais.
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <SignInForm />
+          <SignUpForm />
         </CardContent>
       </Card>
     </div>
