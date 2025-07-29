@@ -6,6 +6,7 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { Metadata } from 'next'
+import { Footer } from '../_components/footer'
 import { SignInForm } from '../_components/signin-form'
 
 export const metadata: Metadata = {
@@ -28,6 +29,7 @@ export default function SignInPage() {
         <CardContent>
           <SignInForm />
         </CardContent>
+        <Footer text="Ainda não possui uma conta?" url="/auth/signup" />
       </Card>
     </div>
   )

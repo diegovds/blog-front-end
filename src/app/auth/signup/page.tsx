@@ -7,6 +7,7 @@ import {
 } from '@/components/ui/card'
 import { Metadata } from 'next'
 import { SignUpForm } from '../_components/signup-form'
+import { Footer } from '../_components/footer'
 
 export const metadata: Metadata = {
   title: 'Cadastro',
@@ -28,6 +29,7 @@ export default function SignInPage() {
         <CardContent>
           <SignUpForm />
         </CardContent>
+        <Footer text="Já possui uma conta?" url="/auth/signin" />
       </Card>
     </div>
   )
