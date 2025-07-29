@@ -16,8 +16,11 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'Blog',
-  description: '',
+  title: {
+    default: 'Blog',
+    template: '%s | ApoiaDev',
+  },
+  description: 'Blog.',
 }
 
 export default function RootLayout({
