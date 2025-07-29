@@ -1,8 +1,13 @@
+import { PostsSection } from '@/components/posts-section'
 import api from '@/lib/axios'
 import { Auth } from '@/types/auth'
 import type { Metadata } from 'next'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
+
+interface Props {
+  searchParams: Promise<{ page: number | undefined }>
+}
 
 export async function generateMetadata(): Promise<Metadata> {
   const cookieStore = await cookies()
@@ -29,7 +34,7 @@ export async function generateMetadata(): Promise<Metadata> {
   }
 }
 
-export default async function Dashboard() {
+export default async function Dashboard({ searchParams }: Props) {
   const cookieStore = await cookies()
   const token = cookieStore.get('token')
 
@@ -48,5 +53,18 @@ export default async function Dashboard() {
 
   if (!auth) redirect('/auth/signin')
 
-  return <div>Olá {auth.user.name}</div>
+  const { page } = await searchParams
+
+  return (
+    <div className="flex flex-1 flex-col items-center">
+      <h1 className="mb-6 place-self-start text-xl font-semibold md:text-2xl">
+        Dashboard
+      </h1>
+      <PostsSection
+        page={!page ? 1 : page}
+        url={`${process.env.NEXT_PUBLIC_HOST_URL}/api/admin/posts?page=`}
+        token={token.value}
+      />
+    </div>
+  )
 }

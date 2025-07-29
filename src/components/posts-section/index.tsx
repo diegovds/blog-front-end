@@ -11,9 +11,10 @@ import { Post } from './post'
 interface PostsSectionProps {
   url: string
   page: number
+  token?: string
 }
 
-export function PostsSection({ url, page }: PostsSectionProps) {
+export function PostsSection({ url, page, token }: PostsSectionProps) {
   const [npage, setNpage] = useState<number>(page)
 
   const queryClient = useQueryClient()
@@ -23,9 +24,19 @@ export function PostsSection({ url, page }: PostsSectionProps) {
   }, [queryClient, npage, url])
 
   const getPosts = async () => {
-    return await api
-      .get<Posts>(`${url}${npage}`)
-      .then((response) => response.data)
+    if (!token) {
+      return await api
+        .get<Posts>(`${url}${npage}`)
+        .then((response) => response.data)
+    } else {
+      return await api
+        .get<Posts>(`${url}${npage}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((response) => response.data)
+    }
   }
 
   const { data, isLoading, error } = useQuery({
