@@ -2,6 +2,7 @@ import { Footer } from '@/components/footer'
 import { Navbar } from '@/components/navbar'
 import { QueryClientContext } from '@/providers/queryclient'
 import type { Metadata } from 'next'
+import { CookiesProvider } from 'next-client-cookies/server'
 import { Geist, Geist_Mono } from 'next/font/google'
 import './globals.css'
 
@@ -31,14 +32,18 @@ export default function RootLayout({
   return (
     <html lang="pt-BR">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} container mx-auto bg-gradient-to-b from-gray-800 via-gray-900 to-gray-950 px-3 text-zinc-200 antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} bg-gradient-to-b from-gray-800 via-gray-900 to-gray-950 text-zinc-200 antialiased`}
       >
         <QueryClientContext>
-          <div className="flex min-h-dvh flex-col gap-6">
-            <Navbar />
-            <main className="flex flex-1">{children}</main>
-            <Footer />
-          </div>
+          <CookiesProvider>
+            <div className="flex min-h-dvh flex-col gap-6">
+              <Navbar />
+              <main className="container mx-auto flex flex-1 px-3">
+                {children}
+              </main>
+              <Footer />
+            </div>
+          </CookiesProvider>
         </QueryClientContext>
       </body>
     </html>

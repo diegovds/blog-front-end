@@ -1,6 +1,7 @@
 'use client'
 
 import { Menu, X } from 'lucide-react'
+import { useCookies } from 'next-client-cookies'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState } from 'react'
@@ -8,15 +9,16 @@ import { useState } from 'react'
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
   const pathname = usePathname()
+  const cookies = useCookies()
 
-  const isAuthenticated = false // substitua com sua lógica real
+  const isAuthenticated = cookies.get('token')
 
   const linkClasses = (path: string) =>
     `${pathname === path ? 'font-bold underline' : ''}`
 
   return (
-    <nav className="bg-blue-700 text-white">
-      <div className="mx-auto max-w-6xl px-4">
+    <nav className="bg-blue-700 text-zinc-200">
+      <div className="container mx-auto px-3">
         <div className="flex items-center justify-between py-4">
           {/* Logo */}
           <Link href="/" className="text-xl font-semibold">
@@ -38,9 +40,14 @@ export function Navbar() {
               Home
             </Link>
             {isAuthenticated ? (
-              <Link href="/dashboard" className={linkClasses('/dashboard')}>
-                Dashboard
-              </Link>
+              <>
+                <Link href="/dashboard" className={linkClasses('/dashboard')}>
+                  Dashboard
+                </Link>
+                <Link href="/" onClick={() => cookies.remove('token')}>
+                  Sair
+                </Link>
+              </>
             ) : (
               <Link href="/auth/signin" className={linkClasses('/auth/signin')}>
                 Login
@@ -62,13 +69,18 @@ export function Navbar() {
               Home
             </Link>
             {isAuthenticated ? (
-              <Link
-                href="/dashboard"
-                className={linkClasses('/dashboard')}
-                onClick={() => setIsOpen(false)}
-              >
-                Dashboard
-              </Link>
+              <>
+                <Link
+                  href="/dashboard"
+                  className={linkClasses('/dashboard')}
+                  onClick={() => setIsOpen(false)}
+                >
+                  Dashboard
+                </Link>
+                <Link href="/" onClick={() => cookies.remove('token')}>
+                  Sair
+                </Link>
+              </>
             ) : (
               <Link
                 href="/auth/signin"
