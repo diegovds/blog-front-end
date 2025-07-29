@@ -1,16 +1,30 @@
 'use client'
 
 import { PostsData } from '@/types/post'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { ArrowBigLeft, ArrowBigRight } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { Button } from '../ui/button'
 import { Post } from './post'
 
-export function PostsSection() {
-  const { data, isLoading, error } = useQuery<PostsData['data']>({
-    queryKey: ['get-posts'],
-    queryFn: async (): Promise<PostsData['data']> => {
-      const url = `${process.env.NEXT_PUBLIC_HOST_URL}/api/posts`
+interface PostsSectionProps {
+  url: string
+  page: number
+}
 
-      const response = await fetch(url)
+export function PostsSection({ url, page }: PostsSectionProps) {
+  const [npage, setNpage] = useState<number>(page)
+
+  const queryClient = useQueryClient()
+
+  useEffect(() => {
+    queryClient.invalidateQueries({ queryKey: ['get-posts', npage, url] })
+  }, [queryClient, npage, url])
+
+  const { data, isLoading, error } = useQuery<PostsData['data']>({
+    queryKey: ['get-posts', npage, url],
+    queryFn: async (): Promise<PostsData['data']> => {
+      const response = await fetch(`${url}${npage}`)
       const json = await response.json()
 
       if (!response.ok) {
@@ -21,6 +35,16 @@ export function PostsSection() {
     },
     refetchInterval: 60000, // refetch a cada 60 segundos
   })
+
+  useEffect(() => {
+    if (data && data.posts.length === 0 && npage > 1) {
+      setNpage(npage - 1)
+    }
+
+    if (data && data.posts.length === 0 && npage < 1) {
+      setNpage(npage + 1)
+    }
+  }, [npage, data])
 
   if (isLoading) {
     return (
@@ -39,8 +63,30 @@ export function PostsSection() {
   }
 
   return (
-    <div className="mx-auto grid w-fit gap-12 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
-      {data && data.posts.map((post) => <Post key={post.id} {...post} />)}
-    </div>
+    <>
+      <div className="mx-auto grid w-fit gap-12 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
+        {data && data.posts.map((post) => <Post key={post.id} {...post} />)}
+      </div>
+      <div className="mt-6 flex justify-end gap-1">
+        {npage > 1 && (
+          <Button
+            className="w-fit cursor-pointer rounded-sm bg-gray-800 px-2 py-1 text-sm duration-300 hover:bg-gray-950"
+            onClick={() => {
+              setNpage(npage - 1)
+            }}
+          >
+            <ArrowBigLeft className="fill-zinc-200 text-zinc-200" />
+          </Button>
+        )}
+        <Button
+          className="w-fit cursor-pointer rounded-sm bg-gray-800 px-2 py-1 text-sm duration-300 hover:bg-gray-950"
+          onClick={() => {
+            setNpage(npage + 1)
+          }}
+        >
+          <ArrowBigRight className="fill-zinc-200 text-zinc-200" />
+        </Button>
+      </div>
+    </>
   )
 }
