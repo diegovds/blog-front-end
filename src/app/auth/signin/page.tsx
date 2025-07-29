@@ -84,13 +84,9 @@ export default function SignInPage() {
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-zinc-200">Email</FormLabel>
+                    <FormLabel>Email</FormLabel>
                     <FormControl>
-                      <Input
-                        placeholder="Digite seu email..."
-                        {...field}
-                        className="bg-zinc-200"
-                      />
+                      <Input placeholder="Digite seu email..." {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -101,13 +97,12 @@ export default function SignInPage() {
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-zinc-200">Senha</FormLabel>
+                    <FormLabel>Senha</FormLabel>
                     <FormControl>
                       <Input
                         type="password"
                         placeholder="Digite sua senha..."
                         {...field}
-                        className="bg-zinc-200"
                       />
                     </FormControl>
                     <FormMessage />
