@@ -23,7 +23,7 @@ export function PostDetail({ post }: PostProps) {
           <p>{formatDate(post.createdAt)}</p>
         </div>
       </div>
-      <p className="md:base text-sm text-balance">{post.body}</p>
+      <p className="md:base text-sm">{post.body}</p>
       <Tags tags={post.tags} />
     </div>
   )
