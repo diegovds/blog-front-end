@@ -3,7 +3,7 @@ import Link from 'next/link'
 
 export function Post(post: P) {
   return (
-    <div className="flex w-full flex-col justify-between overflow-hidden rounded-lg bg-gray-800 md:w-60">
+    <div className="flex flex-col justify-between overflow-hidden rounded-lg bg-gray-800">
       <h3 className="bg-blue-700 px-4 pt-4 pb-4 text-base font-semibold">
         {post.title}
       </h3>
