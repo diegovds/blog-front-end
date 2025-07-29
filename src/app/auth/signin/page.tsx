@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 export default function SignInPage() {
   return (
     <div className="flex flex-1 items-center justify-center">
-      <Card className="h-fit w-64 border-0 bg-gray-800 md:w-96">
+      <Card className="h-fit w-[85%] border-0 bg-gray-800 md:w-96">
         <CardHeader className="flex flex-col items-center">
           <CardTitle className="text-xl font-bold text-zinc-200 sm:text-2xl">
             Entrar
