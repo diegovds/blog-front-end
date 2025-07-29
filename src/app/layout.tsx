@@ -31,7 +31,7 @@ export default function RootLayout({
   return (
     <html lang="pt-BR">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} container mx-auto bg-gray-900 px-3 text-zinc-200 antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} container mx-auto bg-gradient-to-b from-gray-800 via-gray-900 to-gray-950 px-3 text-zinc-200 antialiased`}
       >
         <QueryClientContext>
           <div className="flex min-h-dvh flex-col gap-6">
