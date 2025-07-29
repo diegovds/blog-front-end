@@ -14,6 +14,7 @@ import api from '@/lib/axios'
 import { Auth } from '@/types/auth'
 import { zodResolver } from '@hookform/resolvers/zod'
 import Cookies from 'js-cookie'
+import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
@@ -31,6 +32,8 @@ const formSchema = z.object({
 type FormData = z.infer<typeof formSchema>
 
 export function SignUpForm() {
+  const router = useRouter()
+
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -55,6 +58,8 @@ export function SignUpForm() {
           expires: cookieExpiresInSeconds,
           path: '/',
         })
+
+        router.push('/dashboard')
       })
       .catch((err) => {
         console.log(err.response.data.error)
