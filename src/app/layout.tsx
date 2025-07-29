@@ -36,7 +36,7 @@ export default function RootLayout({
         <QueryClientContext>
           <div className="flex min-h-dvh flex-col gap-6">
             <Navbar />
-            <main className="flex-1">{children}</main>
+            <main className="flex flex-1">{children}</main>
             <Footer />
           </div>
         </QueryClientContext>
