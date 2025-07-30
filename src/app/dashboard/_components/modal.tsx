@@ -77,13 +77,13 @@ export function Modal({ post, token, create }: ModalProps) {
 
     const status = formData.status === 'Rascunho' ? 'DRAFT' : 'PUBLISHED'
 
-    const data = {
-      title: formData.title,
-      body: formData.body,
-      status,
-    }
-
     if (update && post) {
+      const data = {
+        title: formData.title,
+        body: formData.body,
+        status,
+      }
+
       await api
         .put<Post>(`/admin/posts/${post.slug}`, data, {
           headers: {
@@ -98,6 +98,13 @@ export function Modal({ post, token, create }: ModalProps) {
     }
 
     if (create) {
+      const data = {
+        title: formData.title,
+        body: formData.body,
+        tags: formData.tags,
+        status,
+      }
+
       await api
         .post<Post>(`/admin/posts`, data, {
           headers: {
