@@ -26,14 +26,12 @@ export function PostsSection({ url, page, token }: PostsSectionProps) {
     queryClient.invalidateQueries({ queryKey: ['get-posts', npage, url] })
   }, [queryClient, npage, url])
 
-  const getPosts = async () => {
+  const getPosts = async (u: string) => {
     if (!token) {
-      return await api
-        .get<Posts>(`${url}${npage}`)
-        .then((response) => response.data)
+      return await api.get<Posts>(u).then((response) => response.data)
     } else {
       return await api
-        .get<Posts>(`${url}${npage}`, {
+        .get<Posts>(u, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -44,7 +42,7 @@ export function PostsSection({ url, page, token }: PostsSectionProps) {
 
   const { data, isLoading, error } = useQuery({
     queryKey: ['get-posts', npage, url],
-    queryFn: getPosts,
+    queryFn: () => getPosts(`${url}${npage}`),
     refetchInterval: 60000, // refetch a cada 60 segundos
   })
 
@@ -60,10 +58,10 @@ export function PostsSection({ url, page, token }: PostsSectionProps) {
 
   useEffect(() => {
     if (reload) {
-      queryClient.invalidateQueries({ queryKey: ['get-posts'] })
+      queryClient.invalidateQueries({ queryKey: ['get-posts', npage, url] })
       toggleReload()
     }
-  }, [queryClient, reload, toggleReload])
+  }, [queryClient, npage, url, reload, toggleReload])
 
   if (isLoading) {
     return (
@@ -93,26 +91,28 @@ export function PostsSection({ url, page, token }: PostsSectionProps) {
             <DashboardPost key={post.id} post={post} token={token} />
           ))}
       </div>
-      <div className="mt-6 flex gap-1 place-self-end">
-        {npage > 1 && (
+      {data && data.posts.length > 0 && (
+        <div className="mt-6 flex gap-1 place-self-end">
+          {npage > 1 && (
+            <Button
+              className="w-fit cursor-pointer rounded-sm bg-gray-800 px-2 py-1 text-sm duration-300 hover:bg-gray-950"
+              onClick={() => {
+                setNpage(npage - 1)
+              }}
+            >
+              <ArrowBigLeft className="fill-zinc-200 text-zinc-200" />
+            </Button>
+          )}
           <Button
             className="w-fit cursor-pointer rounded-sm bg-gray-800 px-2 py-1 text-sm duration-300 hover:bg-gray-950"
             onClick={() => {
-              setNpage(npage - 1)
+              setNpage(npage + 1)
             }}
           >
-            <ArrowBigLeft className="fill-zinc-200 text-zinc-200" />
+            <ArrowBigRight className="fill-zinc-200 text-zinc-200" />
           </Button>
-        )}
-        <Button
-          className="w-fit cursor-pointer rounded-sm bg-gray-800 px-2 py-1 text-sm duration-300 hover:bg-gray-950"
-          onClick={() => {
-            setNpage(npage + 1)
-          }}
-        >
-          <ArrowBigRight className="fill-zinc-200 text-zinc-200" />
-        </Button>
-      </div>
+        </div>
+      )}
     </>
   )
 }
