@@ -135,6 +135,7 @@ export function Modal({ post, token, onReload }: ModalProps) {
                     <Input
                       className="text-black"
                       placeholder="Digite seu título..."
+                      autoFocus
                       {...field}
                     />
                   </FormControl>
