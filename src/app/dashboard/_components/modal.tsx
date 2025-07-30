@@ -48,6 +48,7 @@ type FormData = z.infer<typeof formSchema>
 
 export function Modal({ post, token, onReload }: ModalProps) {
   const [open, setOpen] = useState(false)
+  const [loading, setLoading] = useState(false)
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -78,6 +79,26 @@ export function Modal({ post, token, onReload }: ModalProps) {
         },
       )
       .then((response) => response.data)
+
+    onReload()
+    setOpen(false)
+  }
+
+  async function handleDelete() {
+    setLoading(true)
+
+    await api
+      .delete(
+        `${process.env.NEXT_PUBLIC_HOST_URL}/api/admin/posts/${post.slug}`,
+
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      )
+      .then((response) => response.data)
+      .finally(() => setLoading(false))
 
     onReload()
     setOpen(false)
@@ -155,7 +176,10 @@ export function Modal({ post, token, onReload }: ModalProps) {
                       {['Rascunho', 'Publicado'].map((value) => (
                         <div key={value} className="flex items-center gap-2">
                           <RadioGroupItem value={value} id={value} />
-                          <Label className="text-lg" htmlFor={value}>
+                          <Label
+                            className="text-sm font-normal"
+                            htmlFor={value}
+                          >
                             {value}
                           </Label>
                         </div>
@@ -169,13 +193,20 @@ export function Modal({ post, token, onReload }: ModalProps) {
 
             <Button
               type="submit"
-              disabled={form.formState.isSubmitting}
-              className="w-full cursor-pointer"
+              disabled={form.formState.isSubmitting || loading}
+              className="w-full cursor-pointer rounded-sm bg-gray-900 px-2 py-1 text-sm font-normal duration-300 hover:bg-gray-950"
             >
               {form.formState.isSubmitting ? 'Carregando...' : 'Atualizar'}
             </Button>
           </form>
         </Form>
+        <Button
+          disabled={form.formState.isSubmitting || loading}
+          className="w-full cursor-pointer rounded-sm bg-red-900 px-2 py-1 text-sm font-normal duration-300 hover:bg-red-950"
+          onClick={handleDelete}
+        >
+          {loading ? 'Carregando...' : 'Deletar'}
+        </Button>
       </DialogContent>
     </Dialog>
   )
