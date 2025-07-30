@@ -115,7 +115,7 @@ export function Modal({ post, token, onReload }: ModalProps) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="mx-4 mb-4 h-fit w-fit cursor-pointer place-self-end rounded-sm bg-gray-900 px-2 py-1 text-sm font-normal duration-300 hover:bg-gray-950">
+        <Button className="h-fit w-fit cursor-pointer place-self-end rounded-sm bg-gray-900 px-2 py-1 text-sm font-normal duration-300 hover:bg-gray-950">
           Editar
         </Button>
       </DialogTrigger>
@@ -184,7 +184,11 @@ export function Modal({ post, token, onReload }: ModalProps) {
                     >
                       {['Rascunho', 'Publicado'].map((value) => (
                         <div key={value} className="flex items-center gap-2">
-                          <RadioGroupItem value={value} id={value} />
+                          <RadioGroupItem
+                            className="bg-zinc-200"
+                            value={value}
+                            id={value}
+                          />
                           <Label
                             className="text-sm font-normal"
                             htmlFor={value}
