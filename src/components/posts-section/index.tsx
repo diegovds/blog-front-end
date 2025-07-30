@@ -2,6 +2,7 @@
 
 import { DashboardPost } from '@/app/dashboard/_components/dashboard-post'
 import api from '@/lib/axios'
+import { useReloadStore } from '@/stores/useReloadStore'
 import { Posts } from '@/types/post'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { ArrowBigLeft, ArrowBigRight } from 'lucide-react'
@@ -17,6 +18,7 @@ interface PostsSectionProps {
 
 export function PostsSection({ url, page, token }: PostsSectionProps) {
   const [npage, setNpage] = useState<number>(page)
+  const { reload, toggleReload } = useReloadStore()
 
   const queryClient = useQueryClient()
 
@@ -56,9 +58,12 @@ export function PostsSection({ url, page, token }: PostsSectionProps) {
     }
   }, [npage, data])
 
-  function reloadPosts() {
-    queryClient.invalidateQueries({ queryKey: ['get-posts', npage, url] })
-  }
+  useEffect(() => {
+    if (reload) {
+      queryClient.invalidateQueries({ queryKey: ['get-posts'] })
+      toggleReload()
+    }
+  }, [queryClient, reload, toggleReload])
 
   if (isLoading) {
     return (
@@ -85,12 +90,7 @@ export function PostsSection({ url, page, token }: PostsSectionProps) {
         {data &&
           token &&
           data.posts.map((post) => (
-            <DashboardPost
-              key={post.id}
-              post={post}
-              token={token}
-              reload={reloadPosts}
-            />
+            <DashboardPost key={post.id} post={post} token={token} />
           ))}
       </div>
       <div className="mt-6 flex gap-1 place-self-end">

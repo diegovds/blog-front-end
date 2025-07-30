@@ -5,14 +5,9 @@ import { Modal } from './modal'
 interface DashboardPostProps {
   post: Post
   token: string
-  reload: () => void
 }
 
-export function DashboardPost({ post, token, reload }: DashboardPostProps) {
-  function reloadPosts() {
-    reload()
-  }
-
+export function DashboardPost({ post, token }: DashboardPostProps) {
   return (
     <div className="flex flex-col justify-between overflow-hidden rounded-lg bg-gray-800">
       <div className="bg-blue-700 px-4 py-4">
@@ -31,7 +26,7 @@ export function DashboardPost({ post, token, reload }: DashboardPostProps) {
           >
             {post.status === 'DRAFT' ? 'Rascunho' : 'Publicado'}
           </p>
-          <Modal token={token} post={post} onReload={reloadPosts} />
+          <Modal token={token} post={post} />
         </div>
         {post.status === 'PUBLISHED' && (
           <Link

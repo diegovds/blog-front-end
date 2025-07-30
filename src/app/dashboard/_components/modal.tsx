@@ -22,6 +22,7 @@ import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Textarea } from '@/components/ui/textarea'
 import api from '@/lib/axios'
+import { useReloadStore } from '@/stores/useReloadStore'
 import { Post } from '@/types/post'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
@@ -31,7 +32,6 @@ import { z } from 'zod'
 interface ModalProps {
   token: string
   post: Post
-  onReload: () => void
 }
 
 const formSchema = z.object({
@@ -41,13 +41,17 @@ const formSchema = z.object({
   body: z
     .string()
     .min(2, { message: 'O conteúdo precisa ter pelo menos 2 caracteres' }),
+  tags: z
+    .string()
+    .min(2, { message: 'As tags precisam ter pelo menos 2 caracteres' }),
   status: z.enum(['Rascunho', 'Publicado']),
 })
 
 type FormData = z.infer<typeof formSchema>
 
-export function Modal({ post, token, onReload }: ModalProps) {
+export function Modal({ post, token }: ModalProps) {
   const [open, setOpen] = useState(false)
+  const { setReload } = useReloadStore()
   const [loading, setLoading] = useState(false)
 
   const form = useForm<FormData>({
@@ -55,6 +59,7 @@ export function Modal({ post, token, onReload }: ModalProps) {
     defaultValues: {
       title: post.title,
       body: post.body,
+      tags: post.tags,
       status: post.status === 'DRAFT' ? 'Rascunho' : 'Publicado',
     },
   })
@@ -86,7 +91,7 @@ export function Modal({ post, token, onReload }: ModalProps) {
         )
         .then((response) => response.data)
 
-      onReload()
+      setReload(true)
       setOpen(false)
       form.reset(form.getValues())
     }
@@ -108,7 +113,7 @@ export function Modal({ post, token, onReload }: ModalProps) {
       .then((response) => response.data)
       .finally(() => setLoading(false))
 
-    onReload()
+    setReload(true)
     setOpen(false)
   }
 
@@ -162,6 +167,25 @@ export function Modal({ post, token, onReload }: ModalProps) {
                     <Textarea
                       className="h-32 resize-none bg-zinc-200 text-black"
                       placeholder="Digite o conteúdo..."
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="tags"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Tags (Digite separadas por vírgula)</FormLabel>
+                  <FormControl>
+                    <Input
+                      className="text-black"
+                      placeholder="Digite as tags..."
+                      disabled
                       {...field}
                     />
                   </FormControl>
