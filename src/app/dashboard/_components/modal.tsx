@@ -111,7 +111,7 @@ export function Modal({ post, token, onReload }: ModalProps) {
           Editar
         </Button>
       </DialogTrigger>
-      <DialogContent className="h-fit w-[85%] border-0 bg-gray-800 md:w-96">
+      <DialogContent className="h-fit w-[85%] border-0 bg-gray-800 p-7 md:w-[60%]">
         <DialogHeader>
           <DialogTitle className="text-lg font-semibold text-zinc-200 md:text-xl">
             Edição
