@@ -6,7 +6,7 @@ export interface Post {
   tags: string
   body: string
   slug: string
-  status: string
+  status: 'DRAFT' | 'PUBLISHED'
 }
 
 export interface Posts {
