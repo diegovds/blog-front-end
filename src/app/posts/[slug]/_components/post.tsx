@@ -20,7 +20,7 @@ export function PostDetail({ post }: PostProps) {
         </div>
         <div className="flex items-center gap-1">
           <Calendar1 size={20} className="rounded-sm bg-gray-900" />
-          <p>{formatDate(post.createdAt)}</p>
+          <p>{formatDate(post.created_at)}</p>
         </div>
       </div>
       <p className="md:base text-sm">{post.body}</p>
