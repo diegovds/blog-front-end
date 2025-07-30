@@ -14,7 +14,7 @@ export function Post(post: P) {
         {post.tags}
       </p>
       <Link
-        className="mx-4 mb-4 w-fit place-self-end rounded-sm bg-gray-900 px-2 py-1 text-sm duration-300 hover:bg-gray-950"
+        className="mx-4 mb-4 w-fit place-self-end rounded-sm bg-gray-900 px-2 py-1 text-xs duration-300 hover:bg-gray-950 md:text-sm"
         href={`/posts/${post.slug}`}
       >
         Ler mais
