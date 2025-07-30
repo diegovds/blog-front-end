@@ -115,7 +115,7 @@ export function Modal({ post, token, create }: ModalProps) {
 
       setReload(true)
       setOpen(false)
-      form.reset(form.getValues())
+      form.reset()
     }
   }
 
