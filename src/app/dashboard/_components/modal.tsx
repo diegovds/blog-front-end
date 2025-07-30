@@ -59,29 +59,37 @@ export function Modal({ post, token, onReload }: ModalProps) {
     },
   })
 
-  async function onSubmit(form: FormData) {
-    const status = form.status === 'Rascunho' ? 'DRAFT' : 'PUBLISHED'
+  async function onSubmit(formData: FormData) {
+    const update =
+      form.formState.defaultValues?.title !== formData.title ||
+      form.formState.defaultValues?.body !== formData.body ||
+      form.formState.defaultValues?.status !== formData.status
 
-    const data = {
-      title: form.title,
-      body: form.body,
-      status,
-    }
+    if (update) {
+      const status = formData.status === 'Rascunho' ? 'DRAFT' : 'PUBLISHED'
 
-    await api
-      .put<Post>(
-        `${process.env.NEXT_PUBLIC_HOST_URL}/api/admin/posts/${post.slug}`,
-        data,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
+      const data = {
+        title: formData.title,
+        body: formData.body,
+        status,
+      }
+
+      await api
+        .put<Post>(
+          `${process.env.NEXT_PUBLIC_HOST_URL}/api/admin/posts/${post.slug}`,
+          data,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           },
-        },
-      )
-      .then((response) => response.data)
+        )
+        .then((response) => response.data)
 
-    onReload()
-    setOpen(false)
+      onReload()
+      setOpen(false)
+      form.reset(form.getValues())
+    }
   }
 
   async function handleDelete() {
