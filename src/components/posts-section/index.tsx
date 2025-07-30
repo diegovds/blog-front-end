@@ -1,5 +1,6 @@
 'use client'
 
+import { DashboardPost } from '@/app/dashboard/_components/dashboard-post'
 import api from '@/lib/axios'
 import { Posts } from '@/types/post'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
@@ -55,6 +56,10 @@ export function PostsSection({ url, page, token }: PostsSectionProps) {
     }
   }, [npage, data])
 
+  function reloadPosts() {
+    queryClient.invalidateQueries({ queryKey: ['get-posts', npage, url] })
+  }
+
   if (isLoading) {
     return (
       <div className="mt-5">
@@ -74,7 +79,19 @@ export function PostsSection({ url, page, token }: PostsSectionProps) {
   return (
     <>
       <div className="grid w-fit gap-12 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
-        {data && data.posts.map((post) => <Post key={post.id} {...post} />)}
+        {data &&
+          !token &&
+          data.posts.map((post) => <Post key={post.id} {...post} />)}
+        {data &&
+          token &&
+          data.posts.map((post) => (
+            <DashboardPost
+              key={post.id}
+              post={post}
+              token={token}
+              reload={reloadPosts}
+            />
+          ))}
       </div>
       <div className="mt-6 flex gap-1 place-self-end">
         {npage > 1 && (
