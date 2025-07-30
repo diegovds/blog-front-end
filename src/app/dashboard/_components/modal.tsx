@@ -259,10 +259,12 @@ export function Modal({ post, token, create }: ModalProps) {
               disabled={form.formState.isSubmitting || loading}
               className="w-full cursor-pointer rounded-sm bg-gray-900 px-2 py-1 text-sm font-normal duration-300 hover:bg-gray-950"
             >
-              {form.formState.isSubmitting
-                ? 'Carregando...'
-                : create
-                  ? 'Salvar'
+              {create
+                ? form.formState.isSubmitting
+                  ? 'Salvando...'
+                  : 'Salvar'
+                : form.formState.isSubmitting
+                  ? 'Atualizando...'
                   : 'Atualizar'}
             </Button>
           </form>

@@ -18,6 +18,7 @@ interface PostsSectionProps {
 
 export function PostsSection({ url, page, token }: PostsSectionProps) {
   const [npage, setNpage] = useState<number>(page)
+  const [paginationButton, setPaginationButton] = useState(true)
   const { reload, toggleReload } = useReloadStore()
 
   const queryClient = useQueryClient()
@@ -49,6 +50,7 @@ export function PostsSection({ url, page, token }: PostsSectionProps) {
   useEffect(() => {
     if (data && data.posts.length === 0 && npage > 1) {
       setNpage(npage - 1)
+      setPaginationButton(false)
     }
 
     if (data && data.posts.length === 0 && npage < 1) {
@@ -91,7 +93,7 @@ export function PostsSection({ url, page, token }: PostsSectionProps) {
             <DashboardPost key={post.id} post={post} token={token} />
           ))}
       </div>
-      {data && data.posts.length > 0 && (
+      {data && data.posts.length > 0 && paginationButton && (
         <div className="mt-6 flex gap-1 place-self-end">
           {npage > 1 && (
             <Button
