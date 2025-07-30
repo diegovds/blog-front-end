@@ -275,7 +275,7 @@ export function Modal({ post, token, create }: ModalProps) {
             className="w-full cursor-pointer rounded-sm bg-red-900 px-2 py-1 text-sm font-normal duration-300 hover:bg-red-950"
             onClick={handleDelete}
           >
-            {loading ? 'Carregando...' : 'Deletar'}
+            {loading ? 'Deletando...' : 'Deletar'}
           </Button>
         )}
       </DialogContent>
