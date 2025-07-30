@@ -26,7 +26,7 @@ export function DashboardPost({ post, token }: DashboardPostProps) {
           >
             {post.status === 'DRAFT' ? 'Rascunho' : 'Publicado'}
           </p>
-          <Modal token={token} post={post} />
+          <Modal token={token} post={post} create={false} />
         </div>
         {post.status === 'PUBLISHED' && (
           <Link

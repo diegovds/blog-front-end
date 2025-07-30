@@ -31,7 +31,8 @@ import { z } from 'zod'
 
 interface ModalProps {
   token: string
-  post: Post
+  post?: Post
+  create: boolean
 }
 
 const formSchema = z.object({
@@ -49,7 +50,7 @@ const formSchema = z.object({
 
 type FormData = z.infer<typeof formSchema>
 
-export function Modal({ post, token }: ModalProps) {
+export function Modal({ post, token, create }: ModalProps) {
   const [open, setOpen] = useState(false)
   const { setReload } = useReloadStore()
   const [loading, setLoading] = useState(false)
@@ -57,10 +58,14 @@ export function Modal({ post, token }: ModalProps) {
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      title: post.title,
-      body: post.body,
-      tags: post.tags,
-      status: post.status === 'DRAFT' ? 'Rascunho' : 'Publicado',
+      title: post?.title || '',
+      body: post?.body || '',
+      tags: post?.tags || '',
+      status: post
+        ? post.status === 'DRAFT'
+          ? 'Rascunho'
+          : 'Publicado'
+        : 'Rascunho',
     },
   })
 
@@ -70,25 +75,35 @@ export function Modal({ post, token }: ModalProps) {
       form.formState.defaultValues?.body !== formData.body ||
       form.formState.defaultValues?.status !== formData.status
 
-    if (update) {
-      const status = formData.status === 'Rascunho' ? 'DRAFT' : 'PUBLISHED'
+    const status = formData.status === 'Rascunho' ? 'DRAFT' : 'PUBLISHED'
 
-      const data = {
-        title: formData.title,
-        body: formData.body,
-        status,
-      }
+    const data = {
+      title: formData.title,
+      body: formData.body,
+      status,
+    }
 
+    if (update && post) {
       await api
-        .put<Post>(
-          `${process.env.NEXT_PUBLIC_HOST_URL}/api/admin/posts/${post.slug}`,
-          data,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
+        .put<Post>(`/admin/posts/${post.slug}`, data, {
+          headers: {
+            Authorization: `Bearer ${token}`,
           },
-        )
+        })
+        .then((response) => response.data)
+
+      setReload(true)
+      setOpen(false)
+      form.reset(form.getValues())
+    }
+
+    if (create) {
+      await api
+        .post<Post>(`/admin/posts`, data, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
         .then((response) => response.data)
 
       setReload(true)
@@ -100,37 +115,41 @@ export function Modal({ post, token }: ModalProps) {
   async function handleDelete() {
     setLoading(true)
 
-    await api
-      .delete(
-        `${process.env.NEXT_PUBLIC_HOST_URL}/api/admin/posts/${post.slug}`,
+    if (post) {
+      await api
+        .delete(
+          `/admin/posts/${post.slug}`,
 
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           },
-        },
-      )
-      .then((response) => response.data)
-      .finally(() => setLoading(false))
+        )
+        .then((response) => response.data)
+        .finally(() => setLoading(false))
 
-    setReload(true)
-    setOpen(false)
+      setReload(true)
+      setOpen(false)
+    }
   }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button className="h-fit w-fit cursor-pointer place-self-end rounded-sm bg-gray-900 px-2 py-1 text-sm font-normal duration-300 hover:bg-gray-950">
-          Editar
+          {create ? 'Criar novo postagem' : 'Editar'}
         </Button>
       </DialogTrigger>
       <DialogContent className="h-fit w-[85%] border-0 bg-gray-800 p-7 md:w-[60%]">
         <DialogHeader>
           <DialogTitle className="text-lg font-semibold text-zinc-200 md:text-xl">
-            Edição
+            {create ? 'Criação' : 'Edição'}
           </DialogTitle>
           <DialogDescription className="text-zinc-200">
-            Altere as informações da sua postagem.
+            {create
+              ? 'Adicione as informações da sua postagem'
+              : 'Altere as informações da sua postagem'}
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -185,7 +204,7 @@ export function Modal({ post, token }: ModalProps) {
                     <Input
                       className="text-black"
                       placeholder="Digite as tags..."
-                      disabled
+                      disabled={!create}
                       {...field}
                     />
                   </FormControl>
@@ -233,17 +252,23 @@ export function Modal({ post, token }: ModalProps) {
               disabled={form.formState.isSubmitting || loading}
               className="w-full cursor-pointer rounded-sm bg-gray-900 px-2 py-1 text-sm font-normal duration-300 hover:bg-gray-950"
             >
-              {form.formState.isSubmitting ? 'Carregando...' : 'Atualizar'}
+              {form.formState.isSubmitting
+                ? 'Carregando...'
+                : create
+                  ? 'Salvar'
+                  : 'Atualizar'}
             </Button>
           </form>
         </Form>
-        <Button
-          disabled={form.formState.isSubmitting || loading}
-          className="w-full cursor-pointer rounded-sm bg-red-900 px-2 py-1 text-sm font-normal duration-300 hover:bg-red-950"
-          onClick={handleDelete}
-        >
-          {loading ? 'Carregando...' : 'Deletar'}
-        </Button>
+        {!create && (
+          <Button
+            disabled={form.formState.isSubmitting || loading}
+            className="w-full cursor-pointer rounded-sm bg-red-900 px-2 py-1 text-sm font-normal duration-300 hover:bg-red-950"
+            onClick={handleDelete}
+          >
+            {loading ? 'Carregando...' : 'Deletar'}
+          </Button>
+        )}
       </DialogContent>
     </Dialog>
   )

@@ -4,6 +4,7 @@ import { Auth } from '@/types/auth'
 import type { Metadata } from 'next'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
+import { Modal } from './_components/modal'
 
 interface Props {
   searchParams: Promise<{ page: number | undefined }>
@@ -57,9 +58,10 @@ export default async function Dashboard({ searchParams }: Props) {
 
   return (
     <div className="flex flex-1 flex-col items-center">
-      <h1 className="mb-6 place-self-start text-xl font-semibold md:text-2xl">
-        Dashboard
-      </h1>
+      <div className="mb-6 flex w-full items-center justify-between">
+        <h1 className="text-xl font-semibold md:text-2xl">Dashboard</h1>
+        <Modal create={true} token={token.value} />
+      </div>
       <PostsSection
         page={!page ? 1 : page}
         url={`${process.env.NEXT_PUBLIC_HOST_URL}/api/admin/posts?page=`}
