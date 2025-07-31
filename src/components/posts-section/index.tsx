@@ -14,9 +14,15 @@ interface PostsSectionProps {
   url: string
   page: number
   token?: string
+  queryKey: string
 }
 
-export function PostsSection({ url, page, token }: PostsSectionProps) {
+export function PostsSection({
+  url,
+  page,
+  token,
+  queryKey,
+}: PostsSectionProps) {
   const [npage, setNpage] = useState<number>(page)
   const [paginationButton, setPaginationButton] = useState(true)
   const { reload, toggleReload } = useReloadStore()
@@ -24,8 +30,8 @@ export function PostsSection({ url, page, token }: PostsSectionProps) {
   const queryClient = useQueryClient()
 
   useEffect(() => {
-    queryClient.invalidateQueries({ queryKey: ['get-posts', npage, url] })
-  }, [queryClient, npage, url])
+    queryClient.invalidateQueries({ queryKey: [queryKey, npage, url] })
+  }, [queryClient, queryKey, npage, url])
 
   const getPosts = async (u: string) => {
     if (!token) {
@@ -42,7 +48,7 @@ export function PostsSection({ url, page, token }: PostsSectionProps) {
   }
 
   const { data, isLoading, error } = useQuery({
-    queryKey: ['get-posts', npage, url],
+    queryKey: [queryKey, npage, url],
     queryFn: () => getPosts(`${url}${npage}`),
     refetchInterval: 60000, // refetch a cada 60 segundos
   })
@@ -60,10 +66,10 @@ export function PostsSection({ url, page, token }: PostsSectionProps) {
 
   useEffect(() => {
     if (reload) {
-      queryClient.invalidateQueries({ queryKey: ['get-posts', npage, url] })
+      queryClient.invalidateQueries({ queryKey: [queryKey, npage, url] })
       toggleReload()
     }
-  }, [queryClient, npage, url, reload, toggleReload])
+  }, [queryClient, queryKey, npage, url, reload, toggleReload])
 
   if (isLoading) {
     return (

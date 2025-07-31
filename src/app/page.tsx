@@ -15,6 +15,7 @@ export default async function Home({ searchParams }: Props) {
       <PostsSection
         page={!page ? 1 : page}
         url={`${process.env.NEXT_PUBLIC_HOST_URL}/api/posts?page=`}
+        queryKey="get-posts"
       />
     </div>
   )

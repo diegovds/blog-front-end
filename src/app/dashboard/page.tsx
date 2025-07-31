@@ -66,6 +66,7 @@ export default async function Dashboard({ searchParams }: Props) {
         page={!page ? 1 : page}
         url={`${process.env.NEXT_PUBLIC_HOST_URL}/api/admin/posts?page=`}
         token={token.value}
+        queryKey="get-posts-admin"
       />
     </div>
   )
