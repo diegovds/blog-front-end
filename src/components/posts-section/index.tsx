@@ -82,8 +82,8 @@ export function PostsSection({ url, page, token }: PostsSectionProps) {
   }
 
   return (
-    <>
-      <div className="grid w-fit gap-12 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
+    <div className="flex h-full w-full flex-col justify-between">
+      <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
         {data &&
           !token &&
           data.posts.map((post) => <Post key={post.id} {...post} />)}
@@ -115,6 +115,6 @@ export function PostsSection({ url, page, token }: PostsSectionProps) {
           </Button>
         </div>
       )}
-    </>
+    </div>
   )
 }
