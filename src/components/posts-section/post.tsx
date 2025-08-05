@@ -4,13 +4,13 @@ import Link from 'next/link'
 
 export function Post(post: P) {
   return (
-    <div className="flex min-h-[256px] flex-col overflow-hidden rounded-lg bg-gray-800">
+    <div className="group flex min-h-[256px] flex-col overflow-hidden rounded-lg bg-gray-800">
       <div className="relative mb-2 aspect-video w-full bg-zinc-300">
         <h3 className="absolute top-4 left-4 z-10 mr-4 line-clamp-1 w-fit rounded-sm bg-blue-700/80 px-2 py-0 text-base font-semibold text-balance">
           {post.title}
         </h3>
         {post.cover && (
-          <div className="relative aspect-video w-full">
+          <div className="relative aspect-video w-full duration-600 group-hover:scale-105">
             <Image
               src={post.cover}
               alt="Imagem da postagem"
