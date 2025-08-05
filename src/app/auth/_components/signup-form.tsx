@@ -117,7 +117,7 @@ export function SignUpForm() {
           type="submit"
           disabled={form.formState.isSubmitting}
         >
-          {form.formState.isSubmitting ? 'Carregando...' : 'Entrar'}
+          {form.formState.isSubmitting ? 'Carregando...' : 'Cadastrar'}
         </Button>
       </form>
     </F>
