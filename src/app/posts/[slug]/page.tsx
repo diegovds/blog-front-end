@@ -53,10 +53,8 @@ export default async function PostPage({ params }: PostPageProps) {
   }
 
   return (
-    <div className="flex flex-1 flex-col gap-6 md:flex-row lg:gap-14">
-      <div className="flex-2">
-        <PostDetail post={post} />
-      </div>
+    <div className="flex flex-1 flex-col items-center gap-6 lg:flex-row lg:gap-14">
+      <PostDetail post={post} />
       {relatedPosts !== undefined && <RelatedPosts posts={relatedPosts} />}
     </div>
   )

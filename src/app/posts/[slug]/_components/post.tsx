@@ -10,7 +10,7 @@ interface PostProps {
 
 export function PostDetail({ post }: PostProps) {
   return (
-    <div className="flex flex-2 flex-col gap-6 overflow-hidden rounded-lg bg-gray-800 p-4">
+    <div className="flex flex-3 flex-col gap-6 place-self-start overflow-hidden rounded-lg bg-gray-800 p-4">
       <h2 className="text-xl font-semibold text-balance md:text-2xl">
         {post.title}
       </h2>

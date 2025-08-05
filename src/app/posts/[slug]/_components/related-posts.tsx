@@ -11,9 +11,11 @@ export function RelatedPosts({ posts }: RelatedPostsProps) {
       <h2 className="text-lg font-semibold md:text-xl">
         Postagens relacionados
       </h2>
-      {posts.map((post) => (
-        <Post key={post.id} {...post} />
-      ))}
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-1">
+        {posts.map((post) => (
+          <Post key={post.id} {...post} />
+        ))}
+      </div>
     </div>
   )
 }
