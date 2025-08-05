@@ -89,7 +89,7 @@ export function PostsSection({
 
   return (
     <div className="flex h-full w-full flex-col justify-between">
-      <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
+      <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
         {data &&
           !token &&
           data.posts.map((post) => <Post key={post.id} {...post} />)}
