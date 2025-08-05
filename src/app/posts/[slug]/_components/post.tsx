@@ -2,6 +2,7 @@ import { Tags } from '@/components/tags'
 import { Post } from '@/types/post'
 import { formatDate } from '@/utils/format'
 import { Calendar1, CircleUserRound } from 'lucide-react'
+import Image from 'next/image'
 
 interface PostProps {
   post: Post
@@ -23,6 +24,18 @@ export function PostDetail({ post }: PostProps) {
           <p>{formatDate(post.created_at)}</p>
         </div>
       </div>
+      {post.cover && (
+        <div className="relative aspect-video w-full place-self-center md:w-125">
+          <Image
+            src={post.cover}
+            alt="Imagem da postagem"
+            className="rounded-sm"
+            quality={100}
+            priority
+            fill
+          />
+        </div>
+      )}
       <p className="md:base text-sm">{post.body}</p>
       <Tags tags={post.tags} />
     </div>
