@@ -4,7 +4,6 @@ import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -25,6 +24,7 @@ import api from '@/lib/axios'
 import { useReloadStore } from '@/stores/useReloadStore'
 import { Post } from '@/types/post'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { FileImage } from 'lucide-react'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
@@ -46,6 +46,13 @@ const formSchema = z.object({
     .string()
     .min(2, { message: 'As tags precisam ter pelo menos 2 caracteres' }),
   status: z.enum(['Rascunho', 'Publicado']),
+  cover: z
+    .instanceof(File)
+    .refine(
+      (file) => ['image/png', 'image/jpeg', 'image/gif'].includes(file.type),
+      { message: 'Tipo de imagem inválido' },
+    )
+    .nullable(),
 })
 
 type FormData = z.infer<typeof formSchema>
@@ -54,6 +61,7 @@ export function Modal({ post, token, create }: ModalProps) {
   const [open, setOpen] = useState(false)
   const { setReload } = useReloadStore()
   const [loading, setLoading] = useState(false)
+  const [fileName, setFileName] = useState<null | string>(null)
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -61,6 +69,7 @@ export function Modal({ post, token, create }: ModalProps) {
       title: post?.title || '',
       body: post?.body || '',
       tags: post?.tags || '',
+      cover: null,
       status: post
         ? post.status === 'DRAFT'
           ? 'Rascunho'
@@ -98,17 +107,21 @@ export function Modal({ post, token, create }: ModalProps) {
     }
 
     if (create) {
-      const data = {
-        title: formData.title,
-        body: formData.body,
-        tags: formData.tags,
-        status,
+      const data = new FormData()
+      data.append('title', formData.title)
+      data.append('body', formData.body)
+      data.append('tags', formData.tags)
+      data.append('status', status)
+
+      if (formData.cover) {
+        data.append('cover', formData.cover)
       }
 
       await api
         .post<Post>(`/admin/posts`, data, {
           headers: {
             Authorization: `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data',
           },
         })
         .then((response) => response.data)
@@ -150,14 +163,9 @@ export function Modal({ post, token, create }: ModalProps) {
       </DialogTrigger>
       <DialogContent className="h-fit w-[85%] border-0 bg-gray-800 p-7 md:w-[60%]">
         <DialogHeader>
-          <DialogTitle className="text-lg font-semibold text-zinc-200 md:text-xl">
-            {create ? 'Criação' : 'Edição'}
+          <DialogTitle className="text-center text-lg font-semibold text-zinc-200 md:text-xl">
+            {create ? 'Criação' : 'Edição'} de postagem
           </DialogTitle>
-          <DialogDescription className="text-zinc-200">
-            {create
-              ? 'Adicione as informações da sua postagem'
-              : 'Altere as informações da sua postagem'}
-          </DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form
@@ -215,6 +223,38 @@ export function Modal({ post, token, create }: ModalProps) {
                       {...field}
                     />
                   </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="cover"
+              render={({ field }) => (
+                <FormItem className="flex items-center">
+                  <div
+                    className={`relative flex w-fit items-center gap-1 rounded-sm px-2 py-1 ${create ? 'bg-zinc-200 hover:bg-zinc-400' : 'bg-zinc-400'} text-sm font-normal text-black duration-300`}
+                  >
+                    <FileImage size={18} /> Selecionar imagem
+                    <input
+                      id="file-upload"
+                      type="file"
+                      accept="image/png,image/jpeg,image/gif"
+                      disabled={!create}
+                      className={`absolute inset-0 h-full w-full ${create ? 'cursor-pointer' : 'cursor-default'} opacity-0`}
+                      onChange={(e) => {
+                        const file = e.target.files?.[0]
+                        field.onChange(file || null) // atualiza o form
+                        setFileName(file?.name || null)
+                      }}
+                    />
+                  </div>
+                  {fileName && (
+                    <p className="line-clamp-1 flex-1 text-sm text-gray-300">
+                      Selecionado: {fileName}
+                    </p>
+                  )}
                   <FormMessage />
                 </FormItem>
               )}
