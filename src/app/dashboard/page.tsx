@@ -58,10 +58,15 @@ export default async function Dashboard({ searchParams }: Props) {
 
   return (
     <div className="flex flex-1 flex-col items-center">
-      <div className="mb-6 flex w-full items-center justify-between">
-        <h1 className="text-xl font-semibold md:text-2xl">Dashboard</h1>
+      <div className="flex w-full items-center justify-between">
+        <h1 className="line-clamp-1 w-50 text-xl font-semibold md:text-2xl">
+          Olá, {auth.user.name}
+        </h1>
         <Modal create={true} token={token.value} />
       </div>
+      <p className="mt-1 mb-6 place-self-start text-sm">
+        Aqui na Dashboard você pode criar, editar e excluir postagens
+      </p>
       <PostsSection
         page={!page ? 1 : page}
         url={`${process.env.NEXT_PUBLIC_HOST_URL}/api/admin/posts?page=`}

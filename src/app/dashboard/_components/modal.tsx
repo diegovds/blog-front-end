@@ -157,8 +157,8 @@ export function Modal({ post, token, create }: ModalProps) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="h-fit w-fit cursor-pointer place-self-end rounded-sm bg-gray-900 px-2 py-1 text-xs font-normal duration-300 hover:bg-gray-950 md:text-sm">
-          {create ? 'Criar novo postagem' : 'Editar'}
+        <Button className="h-fit w-fit cursor-pointer rounded-sm bg-gray-900 px-2 py-1 text-xs font-normal duration-300 hover:bg-gray-950 md:text-sm">
+          {create ? 'Criar nova postagem' : 'Editar'}
         </Button>
       </DialogTrigger>
       <DialogContent className="h-fit w-[85%] border-0 bg-gray-800 p-7 md:w-[60%]">
