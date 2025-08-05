@@ -7,7 +7,7 @@ interface RelatedPostsProps {
 
 export function RelatedPosts({ posts }: RelatedPostsProps) {
   return (
-    <div className="flex flex-1 flex-col gap-6">
+    <div className="flex flex-1 flex-col gap-6 place-self-start">
       <h2 className="text-lg font-semibold md:text-xl">
         Postagens relacionados
       </h2>
