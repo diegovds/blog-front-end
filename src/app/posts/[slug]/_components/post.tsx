@@ -24,18 +24,17 @@ export function PostDetail({ post }: PostProps) {
           <p>{formatDate(post.created_at)}</p>
         </div>
       </div>
-      {post.cover && (
-        <div className="relative aspect-video w-full place-self-center md:w-125">
+      <div className="relative aspect-video w-full place-self-center overflow-hidden rounded-sm bg-zinc-300 md:w-125">
+        {post.cover && (
           <Image
             src={post.cover}
             alt="Imagem da postagem"
-            className="rounded-sm"
             quality={100}
             priority
             fill
           />
-        </div>
-      )}
+        )}
+      </div>
       <p className="md:base text-sm">{post.body}</p>
       <Tags tags={post.tags} />
     </div>
