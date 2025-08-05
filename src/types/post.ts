@@ -7,6 +7,7 @@ export interface Post {
   body: string
   slug: string
   status: 'DRAFT' | 'PUBLISHED'
+  cover: string
 }
 
 export interface Posts {
